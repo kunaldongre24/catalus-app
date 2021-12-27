@@ -43,7 +43,7 @@ export default function ProfileScreen(props) {
       setLoading(true);
 
       const response = await axios.get(
-        `http://192.168.40.141:8000/api/v1/user/id/${user.id}`
+        `http://192.168.43.20:8000/api/v1/user/id/${user.id}`
       );
       setUserData(response.data[0]);
       setLoading(false);

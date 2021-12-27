@@ -26,7 +26,7 @@ export default function Step1(props) {
   }, []);
   const fetchChapters = async () => {
     const response = await axios.get(
-      `http://192.168.40.141:8000/api/v1/admin/fetchData?target=chapter`
+      `http://192.168.43.20:8000/api/v1/admin/fetchData?target=chapter`
     );
     setChapters(response.data);
     return () => {

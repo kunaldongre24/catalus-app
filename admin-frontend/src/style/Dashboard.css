@@ -1,0 +1,13 @@
+.tc {
+  display: flex;
+}
+.tcontain {
+  display: flex;
+  width: 100%;
+}
+.tbl {
+  width: 100%;
+  font-size: 15px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}

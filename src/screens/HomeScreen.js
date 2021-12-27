@@ -32,7 +32,7 @@ export default function HomeScreen() {
     const fetchApi = async () => {
       setLoading(true);
       const response = await axios.get(
-        `http://192.168.40.141:8000/api/v1/user/id/${user.id}`
+        `http://192.168.43.20:8000/api/v1/user/id/${user.id}`
       );
       if (!response.data[0].name) {
         setModalVisible(true);
@@ -45,7 +45,7 @@ export default function HomeScreen() {
   const setName = async (lname, fname) => {
     const name = lname + " " + fname;
     const response = await axios.get(
-      `http://192.168.40.141:8000/api/v1/user/u/${q}`,
+      `http://192.168.43.20:8000/api/v1/user/u/${q}`,
 
       config
     );

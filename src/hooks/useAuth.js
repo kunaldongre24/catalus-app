@@ -34,7 +34,7 @@ export default function useAuth() {
       login: async (email, password) => {
         try {
           const { data } = await axios.post(
-            "http://192.168.40.141:8000/api/v1/auth/login",
+            "http://192.168.43.20:8000/api/v1/auth/login",
             {
               email,
               password,
@@ -59,7 +59,7 @@ export default function useAuth() {
       register: async (email, username, password) => {
         try {
           const response = await axios.post(
-            "http://192.168.40.141:8000/api/v1/auth/signup",
+            "http://192.168.43.20:8000/api/v1/auth/signup",
             {
               email,
               username,

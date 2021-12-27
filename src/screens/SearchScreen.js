@@ -58,7 +58,7 @@ export default function SearchScreen({ navigation }) {
     setSearchData(q);
     if (q) {
       const response = await axios.get(
-        `http://192.168.40.141:8000/api/v1/user/search?s=${q}`,
+        `http://192.168.43.20:8000/api/v1/user/search?s=${q}`,
         config
       );
       setSearchResult(response.data);
