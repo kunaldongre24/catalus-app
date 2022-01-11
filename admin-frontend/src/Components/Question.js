@@ -4,19 +4,38 @@ import axios from "axios";
 function Subtopic() {
   const [chapters, setChapters] = useState([]);
   const [subjects, setSubjects] = useState([]);
+  const [selectedOption, setSelectedOption] = useState();
   const [optionCount, setOptionCount] = useState(1);
   const [filteredChapters, setFilteredChapters] = useState([]);
   const [filteredTopics, setFilteredTopics] = useState([]);
   const [subtopics, setSubtopics] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [editId, setEditId] = useState();
+  const [showModal, toggleModal] = useState(false);
   useEffect(() => {
     fetchChapters();
     fetchSubjects();
     fetchSubtopics();
-    if (!document.getElementById("subtopic").value) {
+    fetchQuestions();
+    if (
+      !document.getElementById("subtopic").value ||
+      !selectedOption ||
+      !chapters.length ||
+      !subjects.length ||
+      !subtopics.length
+    ) {
       document.getElementById("button").disabled = "true";
     }
   }, []);
+  useEffect(() => {
+    if (showModal)
+      setTimeout(
+        function () {
+          toggleModal(false);
+        },
+        [4000]
+      );
+  }, [showModal]);
   const fetchChapters = async () => {
     const response = await axios.get(
       `http://localhost:8000/api/v1/admin/fetchData?target=chapter`
@@ -35,6 +54,7 @@ function Subtopic() {
       setSubjects([]);
     };
   };
+
   const fetchSubtopics = async () => {
     const response = await axios.get(
       `http://localhost:8000/api/v1/admin/fetchData?target=subtopic`
@@ -44,34 +64,20 @@ function Subtopic() {
       setSubtopics([]);
     };
   };
-  const uploadData = async (name, chapterId, subjectId) => {
-    const response = await axios.post(
-      `http://localhost:8000/api/v1/admin/uploadData`,
-      {
-        name: name,
-        subject_id: subjectId,
-        chapter_id: chapterId,
-        type: "subtopic",
-      }
+  const fetchQuestions = async () => {
+    const response = await axios.get(
+      `http://localhost:8000/api/v1/admin/fetchData?target=question`
     );
-    return response;
+    setQuestions(response.data);
+    return () => {
+      setQuestions([]);
+    };
+  };
+  const handleSelect = (e) => {
+    const selected = e.target.value;
+    setSelectedOption(selected);
   };
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    const topicName = e.target.topic.value;
-    const chapterId = e.target.chapter.value;
-    const subjectId = e.target.subject.value;
-    if (!topicName || topicName === "" || subjectId < 0 || chapterId < 0) {
-      return;
-    } else {
-      const res = await uploadData(topicName, chapterId, subjectId);
-      if (res) {
-        document.getElementById("subtopic").value = "";
-        fetchSubtopics();
-      }
-    }
-  };
   const handleSubject = (e) => {
     const subject = parseInt(e.target.value);
     const chapter = chapters.filter((x) => x.subject_id === subject);
@@ -105,6 +111,80 @@ function Subtopic() {
     fetchSubtopics();
     return response;
   };
+  const uploadQuestion = async (e) => {
+    e.preventDefault();
+    if (
+      !document.getElementById("subtopic").value ||
+      !selectedOption ||
+      !chapters.length ||
+      !subjects.length ||
+      !subtopics.length
+    ) {
+      return alert("Something is missing");
+    }
+    const options = document.getElementsByName("option");
+    const optionStatement = document.getElementsByName("option-state");
+    const question = document.getElementById("subtopic").value;
+    const chapter = e.target.chapter.value;
+    const subject = e.target.subject.value;
+    const topic = e.target.topic.value;
+    const qr = await axios.post(
+      `http://localhost:8000/api/v1/admin/uploadData`,
+      {
+        statement: question,
+        chapter_id: chapter,
+        subject_id: subject,
+        subtopic_id: topic,
+        correct_option_id: 0,
+        type: "question",
+      }
+    );
+    for (var i = 0; i < options.length; i++) {
+      const response = await uploadOption(
+        optionStatement[options[i].value].value,
+        qr.data.insertId
+      );
+      if (parseInt(options[i].value) === parseInt(selectedOption)) {
+        const ur = await axios.put(
+          `http://localhost:8000/api/v1/admin/updateData/${qr.data.insertId}`,
+          {
+            type: "question",
+            correct_option_id: response.data.insertId,
+          }
+        );
+      }
+    }
+    fetchQuestions();
+    setOptionCount(1);
+
+    document.getElementById("subtopic").value = "";
+    toggleModal(true);
+  };
+  const uploadOption = async (statement, questionId) => {
+    const checkRes = await axios.post(
+      `http://localhost:8000/api/v1/admin/checkOption`,
+      { option: statement }
+    );
+    console.log(checkRes);
+    var response = { data: {} };
+    if (!checkRes.data.length) {
+      response = await axios.post(
+        `http://localhost:8000/api/v1/admin/uploadData`,
+        {
+          value: statement,
+          type: "_option",
+        }
+      );
+    } else {
+      response.data.insertId = checkRes.data[0].id;
+    }
+    await axios.post(`http://localhost:8000/api/v1/admin/uploadData`, {
+      question_id: questionId,
+      option_id: response.data.insertId,
+      type: "question_option_map",
+    });
+    return response;
+  };
   const updateData = async (id) => {
     const name = document.getElementsByName(`topic-${id}`)[0].value;
     const subject = document.getElementsByName(`subject-${id}`)[0].value;
@@ -127,8 +207,14 @@ function Subtopic() {
   };
   return (
     <div>
-      <h2 className="heading">Create new question</h2>
-      <form className="container-x" onSubmit={handleUpload}>
+      <div
+        className="modal-f"
+        style={showModal ? { opacity: 1, marginTop: "40px" } : {}}
+      >
+        Question Upload Successfully
+      </div>
+      <h2 className="heading"></h2>
+      <form className="container-x" onSubmit={uploadQuestion}>
         <select name="subject" onChange={handleSubject}>
           <option value="-1">Select Subject</option>
           {subjects.map((x) => {
@@ -173,7 +259,6 @@ function Subtopic() {
           type="text"
           autoComplete="off"
           className="input"
-          name="topic"
           id="subtopic"
           placeholder={"Enter question statement..."}
           onChange={checkName}
@@ -190,9 +275,19 @@ function Subtopic() {
           <br />
           <ul className="options">
             {[...Array(optionCount)].map((e, i) => (
-              <li key="i" className="do">
-                <input type="radio" id={`option-${i}`} className={"co"} />
-                <input className="option-input" placeholder="Enter option" />
+              <li key={i} className="do">
+                <input
+                  type="radio"
+                  className={"co"}
+                  name="option"
+                  value={i}
+                  onChange={handleSelect}
+                />
+                <textarea
+                  className="option-input"
+                  name={"option-state"}
+                  placeholder="Enter option statement"
+                ></textarea>
                 <span>Marked as correct</span>
               </li>
             ))}
@@ -218,6 +313,7 @@ function Subtopic() {
       <table>
         <tr>
           <th>Sr no.</th>
+          <th>Question Statement</th>
           <th>Topic Name</th>
           <th>Chapter Name</th>
           <th>Subject Name</th>
@@ -225,7 +321,7 @@ function Subtopic() {
             Edit
           </th>
         </tr>
-        {subtopics.map((x, i) => {
+        {questions.map((x, i) => {
           const edit = editId === x.id;
           return (
             <tr key={x.id}>
@@ -236,12 +332,30 @@ function Subtopic() {
                     type="text"
                     className="table-input"
                     name={`topic-${x.id}`}
-                    defaultValue={x.name}
+                    defaultValue={x.statement}
                   />
                 ) : (
-                  x.name
+                  x.statement
                 )}
               </td>
+              <td>
+                {edit ? (
+                  <select name={`topic-${x.id}`} defaultValue={x.subtopic_id}>
+                    {subtopics.map((topic) => {
+                      return (
+                        <option value={topic.id} key={topic.id}>
+                          {topic.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                ) : (
+                  subtopics
+                    .filter((topic) => topic.id === x.subtopic_id)
+                    .map((data) => data.name)
+                )}
+              </td>
+
               <td>
                 {edit ? (
                   <select name={`chapter-${x.id}`} defaultValue={x.chapter_id}>

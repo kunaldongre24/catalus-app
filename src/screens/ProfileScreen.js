@@ -43,7 +43,7 @@ export default function ProfileScreen(props) {
       setLoading(true);
 
       const response = await axios.get(
-        `http://192.168.43.20:8000/api/v1/user/id/${user.id}`
+        `http://192.168.5.62:8000/api/v1/user/id/${user.id}`
       );
       setUserData(response.data[0]);
       setLoading(false);
@@ -158,15 +158,11 @@ export default function ProfileScreen(props) {
               </Pressable>
             )}
           </View>
-          <View style={{ width: "100%", backgroundColor: "#312d2b" }}>
+          <View style={{ width: "100%", backgroundColor: "#000" }}>
             <View style={styles.chartContainer}>
               <Graph />
             </View>
           </View>
-          <OptionHeader title={"STATS"} />
-          <OptionItem title={"Last Test Rank"} info={"#2"} />
-          <OptionItem title={"Overall Rank"} info={"#1"} />
-          <OptionItem title={"Rating"} info={"1202"} />
           <OptionHeader title={"ACCOUNT ACTIONS"} />
           <OptionItem title={"Change Password"} />
           <OptionButton
@@ -184,7 +180,7 @@ export default function ProfileScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#252422",
+    backgroundColor: "#000000",
   },
 
   backArrow: {
@@ -217,7 +213,7 @@ const styles = StyleSheet.create({
   footer: {
     height: 60,
     width: "100%",
-    backgroundColor: "#252422",
+    backgroundColor: "#000000",
     padding: 10,
     paddingHorizontal: 15,
     display: "flex",
@@ -256,7 +252,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 4,
-    backgroundColor: "#252422",
+    backgroundColor: "#000000",
   },
   menu: {
     width: "100%",
@@ -275,7 +271,7 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     paddingTop: 10,
-    backgroundColor: "#252422",
+    backgroundColor: "#121212",
     margin: 10,
     marginHorizontal: 14,
     borderRadius: 4,

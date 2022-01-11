@@ -1,83 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
   View,
-  ScrollView,
-  RefreshControl,
-  BackHandler,
+  Text,
+  StyleSheet,
   Pressable,
+  Image,
+  TextInput,
+  ScrollView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { UserContext } from "../contexts/UserContext";
-import axios from "axios";
-import StatusBar from "../components/StatusBar";
-import { NavigationContainer } from "@react-navigation/native";
-import ProfileScreen from "./ProfileScreen";
 
-export default function SearchScreen({ navigation }) {
-  const [searchResult, setSearchResult] = useState([]);
-  const [searchData, setSearchData] = useState("");
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
+export default function JoinRoomScreen(props) {
   const [borderColor, setBorderColor] = useState("transparent");
-  const [userSelected, setUserSelected] = useState({});
-  const user = React.useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+  const [searchData, setSearchData] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
 
-  const config = {
-    headers: { "x-access-token": user.token },
-  };
-  useEffect(() => {
-    setLoading(true);
-    setUserSelected({});
-    //do something on page load
-    setLoading(false);
-  }, []);
-  useEffect(() => {
-    if (userSelected.id) {
-      BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    }
-    return () => {
-      BackHandler.removeEventListener(
-        "hardwareBackPress",
-        handleBackButtonClick
-      );
-    };
-  }, [userSelected]);
-  function handleBackButtonClick() {
-    setUserSelected({});
-    return true;
-  }
-  const searchUser = async (e) => {
-    setLoading(true);
-    const q = e.nativeEvent.text;
-    setSearchData(q);
-    if (q) {
-      const response = await axios.get(
-        `http://192.168.5.62:8000/api/v1/user/search?s=${q}`,
-        config
-      );
-      setSearchResult(response.data);
-    } else {
-      setSearchResult([]);
-    }
-    setLoading(false);
-  };
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    //do something on refresh
-    setRefreshing(false);
-  }, [refreshing]);
-  if (userSelected.id) {
-    return (
-      <ProfileScreen info={userSelected} setUserSelected={setUserSelected} />
-    );
-  }
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.createRace}>
+      <View style={styles.fixedHeader}>
+        <Pressable
+          style={{
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+          onPress={() => props.navigation.goBack(null)}
+        >
+          <Image
+            fadeDuration={0}
+            source={require("../assets/back.png")}
+            resizeMode={"contain"}
+            style={styles.backArrow}
+          />
+        </Pressable>
+        <Text
+          style={{
+            height: 30,
+            color: "#fff",
+            fontSize: 20,
+            fontWeight: "bold",
+            left: 0,
+            flex: 1,
+            textAlign: "center",
+            marginRight: 70,
+          }}
+        >
+          Join Room
+        </Text>
+      </View>
       <View style={styles.header}>
         <View style={[styles.searchBar, { borderColor: borderColor }]}>
           <Image
@@ -88,20 +58,14 @@ export default function SearchScreen({ navigation }) {
           />
           <TextInput
             style={styles.inputSearch}
-            placeholder={"Search..."}
+            placeholder={"Search room, user..."}
             placeholderTextColor="rgba(255,255,255,0.5)"
-            onChange={searchUser}
             onFocus={() => setBorderColor("#555")}
             onBlur={() => setBorderColor("transparent")}
           />
         </View>
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView>
         <View style={styles.result}>
           {loading ? (
             <View style={styles.loader}>
@@ -161,12 +125,51 @@ export default function SearchScreen({ navigation }) {
           )}
         </View>
       </ScrollView>
-      <StatusBar />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  btn: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#1174ad",
+    alignItems: "center",
+    borderRadius: 6,
+    justifyContent: "center",
+  },
+
+  createRace: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#000",
+    flex: 1,
+  },
+  fixedHeader: {
+    height: 55,
+    width: "100%",
+    top: 0,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#000000",
+  },
+  backArrow: {
+    tintColor: "#fff",
+    height: 25,
+    width: 70,
+    left: 0,
+  },
+  footer: {
+    height: 75,
+    width: "100%",
+    backgroundColor: "#000000",
+    bottom: 0,
+    padding: 10,
+    position: "absolute",
+    paddingHorizontal: 10,
+    elevation: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: "#000",
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flex: 1,
     width: "100%",
-    backgroundColor: "#121212",
+    backgroundColor: "rgba(255,255,255,0.1)",
     borderRadius: 4,
     paddingLeft: 0,
     flexDirection: "row",

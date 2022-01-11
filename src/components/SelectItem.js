@@ -19,7 +19,6 @@ export default function ListItem({
   checkAllSelected,
 }) {
   const [isCollapsed, setIsCollapsed] = useState(true);
-
   return (
     <View style={{ overflow: "hidden" }}>
       <Pressable
@@ -42,7 +41,10 @@ export default function ListItem({
           >
             {title}
           </Text>
-          <Text style={{ color: "#777" }} numberOfLines={1}>
+          <Text
+            style={{ color: "#777", fontFamily: "Poppins", fontSize: 13 }}
+            numberOfLines={1}
+          >
             {subHeading}
           </Text>
         </View>
@@ -86,7 +88,7 @@ export default function ListItem({
         collapsed={isCollapsed}
         align="center"
         align={"top"}
-        duration={300}
+        duration={100}
         easing={"easeInOut"}
       >
         <Subelement
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#252422",
+    backgroundColor: "#121212",
     padding: 15,
     paddingRight: 30,
     elevation: 3,

@@ -7,7 +7,6 @@ import {
   View,
   Modal,
   BackHandler,
-  Image,
 } from "react-native";
 import InputField from "../components/InputField";
 import FilledButton from "../components/FilledButton";
@@ -17,22 +16,21 @@ import StatusBar from "../components/StatusBar";
 import HomeMenuItem from "../components/HomeMenuItem";
 import Heading from "../components/Heading";
 import axios from "axios";
-import CreateNewRace from "../components/CreateNewRace";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const user = React.useContext(UserContext);
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [newRace, setNewRace] = useState(false);
+
   useEffect(() => {
     setLoading(true);
+
     const fetchApi = async () => {
       setLoading(true);
       const response = await axios.get(
-        `http://192.168.43.20:8000/api/v1/user/id/${user.id}`
+        `http://192.168.5.62:8000/api/v1/user/id/${user.id}`
       );
       if (!response.data[0].name) {
         setModalVisible(true);
@@ -45,14 +43,14 @@ export default function HomeScreen() {
   const setName = async (lname, fname) => {
     const name = lname + " " + fname;
     const response = await axios.get(
-      `http://192.168.43.20:8000/api/v1/user/u/${q}`,
+      `http://192.168.5.62:8000/api/v1/user/u/${q}`,
 
       config
     );
   };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#312d2b" }}>
-      <CreateNewRace newRace={newRace} setNewRace={setNewRace} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#121212" }}>
       <ScrollView>
         <Modal animationType="slide" transparent={true} visible={false}>
           <View style={styles.modalView}>
@@ -121,24 +119,28 @@ export default function HomeScreen() {
             source={require("../assets/flag2.png")}
             style={styles.menuItem}
             subHeading={"10 min vs Friends"}
+            onPress={() => navigation.navigate("JoinRoom")}
           />
           <HomeMenuItem
             title={"Practice"}
             source={require("../assets/flag.png")}
             style={styles.menuItem}
             subHeading={"Self compete"}
+            onPress={() => {}}
           />
           <HomeMenuItem
             title={"Statistics"}
             source={require("../assets/graph.png")}
             style={styles.menuItem}
             subHeading={"Your stats"}
+            onPress={() => {}}
           />
           <HomeMenuItem
             title={"Friends"}
             source={require("../assets/friends.png")}
             style={styles.menuItem}
             subHeading={13}
+            onPress={() => {}}
           />
         </View>
       </ScrollView>
@@ -147,7 +149,7 @@ export default function HomeScreen() {
           android_ripple={{ color: "rgba(0,0,0,0.1)" }}
           style={styles.button}
           onPress={() => {
-            setNewRace(true);
+            navigation.navigate("CreateRace");
           }}
         >
           <Text
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
   footer: {
     height: 75,
     width: "100%",
-    backgroundColor: "#252422",
+    backgroundColor: "#000000",
     bottom: 0,
     padding: 10,
     paddingHorizontal: 15,
@@ -190,19 +192,16 @@ const styles = StyleSheet.create({
   menuItem: {
     width: "100%",
     height: 105,
-    marginBottom: 10,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 6,
-    backgroundColor: "#252422",
     padding: 15,
     overflow: "hidden",
   },
   menu: {
     width: "100%",
     padding: 15,
-    backgroundColor: "#312d2b",
+    backgroundColor: "#000",
     paddingBottom: 100,
   },
 

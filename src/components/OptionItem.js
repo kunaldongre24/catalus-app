@@ -11,7 +11,7 @@ const OptionItem = ({ title, info, style, hideOverflow }) => {
         width: "100%",
         borderBottomWidth: 1,
         borderBottomColor: "#222",
-        backgroundColor: "#312d2b",
+        backgroundColor: "#121212",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",

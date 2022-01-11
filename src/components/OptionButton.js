@@ -12,7 +12,7 @@ const OptionButton = ({ title, info, style, onPress, hideOverflow }) => {
           width: "100%",
           borderBottomWidth: 1,
           borderBottomColor: "#222",
-          backgroundColor: "#312d2b",
+          backgroundColor: "#121212",
           color: "#222",
           display: "flex",
           flexDirection: "row",
