@@ -20,7 +20,6 @@ The app will calculate the completion time as per your watching speed.
 
 ### This is list of subtopics, where you can select which topic lecture to watch.
 <img height="350px" alt="image" src="https://github.com/kunaldongre24/catalus-app/assets/65659848/47f881e6-d40e-404a-9a0e-894af6b13037">
-<img height="350px" alt="image" src="https://github.com/kunaldongre24/catalus-app/assets/65659848/dc213f83-ac93-4f13-bd9a-7ed8dc06513d">
 
 ### This is Lecture Screen.
 <img height="350px" alt="image" src="https://github.com/kunaldongre24/catalus-app/assets/65659848/52e6342e-ebf6-4111-943b-a7112883554b">
