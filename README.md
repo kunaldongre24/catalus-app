@@ -1,4 +1,4 @@
-# Code Compete (ICCP)
+
 
 ## Introduction
 This is a lecture app, where you can track your progress in each topic and set target days.
